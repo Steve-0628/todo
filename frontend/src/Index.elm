@@ -1,7 +1,7 @@
 module Index exposing (..)
 
 import Browser
-import Common exposing (Todo, navbar)
+import Common exposing (TodoItem, navbar)
 import Html exposing (Html, a, br, button, div, text)
 import Time
 
@@ -21,12 +21,20 @@ main =
 
 
 type alias Model =
-    { todos : Maybe (List Todo), page : Int }
+    { todos : Maybe (List TodoItem), page : Int }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model (Just [ Todo (Time.millisToPosix 0) "todo1", Todo (Time.millisToPosix 0) "todo2" ]) 0, Cmd.none )
+    ( Model
+        (Just
+            [ TodoItem (Time.millisToPosix 0) "todo1" (Time.millisToPosix 0) (Time.millisToPosix 0)
+            , TodoItem (Time.millisToPosix 0) "todo2" (Time.millisToPosix 0) (Time.millisToPosix 0)
+            ]
+        )
+        0
+    , Cmd.none
+    )
 
 
 
@@ -77,7 +85,7 @@ view model =
     }
 
 
-todoview : Todo -> Html msg
+todoview : TodoItem -> Html msg
 todoview todo =
     div []
         [ text <| String.fromInt <| Time.posixToMillis todo.createdAt

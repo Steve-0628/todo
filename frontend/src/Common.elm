@@ -1,4 +1,4 @@
-module Common exposing (Todo, navbar)
+module Common exposing (TodoItem, navbar)
 
 import Html exposing (div, text)
 import Time
@@ -10,7 +10,9 @@ navbar =
         ]
 
 
-type alias Todo =
+type alias TodoItem =
     { createdAt : Time.Posix
     , content : String
+    , expectedDue : Time.Posix
+    , staleDate : Time.Posix
     }
