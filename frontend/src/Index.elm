@@ -3,6 +3,7 @@ module Index exposing (..)
 import Browser
 import Common exposing (TodoItem, navbar)
 import Html exposing (Html, a, br, button, div, text)
+import Html.Attributes exposing (href)
 import Time
 
 
@@ -28,8 +29,8 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( Model
         (Just
-            [ TodoItem (Time.millisToPosix 0) "todo1" (Time.millisToPosix 0) (Time.millisToPosix 0)
-            , TodoItem (Time.millisToPosix 0) "todo2" (Time.millisToPosix 0) (Time.millisToPosix 0)
+            [ TodoItem 0 (Time.millisToPosix 0) "todo1" (Time.millisToPosix 0) (Time.millisToPosix 0)
+            , TodoItem 1 (Time.millisToPosix 0) "todo2" (Time.millisToPosix 0) (Time.millisToPosix 0)
             ]
         )
         0
@@ -88,7 +89,9 @@ view model =
 todoview : TodoItem -> Html msg
 todoview todo =
     div []
-        [ text <| String.fromInt <| Time.posixToMillis todo.createdAt
+        [ a [ href ("/todo/" ++ String.fromInt todo.id) ] [ text <| "/todo/" ++ String.fromInt todo.id ]
+        , br [] []
+        , text <| String.fromInt <| Time.posixToMillis todo.createdAt
         , br [] []
         , text todo.content
         ]

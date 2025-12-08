@@ -11,7 +11,8 @@ navbar =
 
 
 type alias TodoItem =
-    { createdAt : Time.Posix
+    { id : Int
+    , createdAt : Time.Posix
     , content : String
     , expectedDue : Time.Posix
     , staleDate : Time.Posix
