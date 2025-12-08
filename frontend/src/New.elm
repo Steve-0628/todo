@@ -4,7 +4,8 @@ import Browser
 import Common exposing (TodoItem, navbar)
 import Html exposing (Html, a, br, button, div, input, text)
 import Html.Attributes exposing (href, type_, value)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onClick, onInput)
+import Http
 import Time
 
 
@@ -46,6 +47,7 @@ init _ =
 type Msg
     = TextChange String
     | Send
+    | GotResponse (Result Http.Error ())
 
 
 updateWip : (TodoItem -> TodoItem) -> Model -> Model
@@ -60,6 +62,15 @@ update msg model =
             ( updateWip (\t -> { t | content = s }) model, Cmd.none )
 
         Send ->
+            ( model
+            , Http.post
+                { url = "http://localhost"
+                , body = Http.stringBody "" ""
+                , expect = Http.expectWhatever GotResponse
+                }
+            )
+
+        GotResponse _ ->
             ( model, Cmd.none )
 
 
@@ -80,6 +91,7 @@ view model =
             , div [] <|
                 [ input [ type_ "text", value model.wipTodo.content, onInput TextChange ] []
                 , input [ type_ "date" ] []
+                , button [ onClick Send ] [ text "send" ]
                 ]
             ]
         ]
