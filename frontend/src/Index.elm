@@ -85,13 +85,13 @@ view model =
         [ div []
             [ navbar
             , div [ class "header-title" ] [ text "My Todos" ]
-            , div [ class "todo-list" ] <|
+            , div [] <|
                 case model.todos of
                     Just todos ->
                         List.map (\todo -> todoview todo) todos
 
                     Nothing ->
-                        [ div [ class "loading" ] [ text "Loading..." ] ]
+                        [ div [] [ text "Loading..." ] ]
             ]
         ]
     }
@@ -101,7 +101,7 @@ todoview : TodoItem -> Html msg
 todoview todo =
     div [ class "todo-item" ]
         [ a [ href ("/todo/" ++ String.fromInt todo.id), class "todo-link" ] [ text <| "/todo/" ++ String.fromInt todo.id ]
-        , div [ class "todo-meta" ]
+        , div []
             [ text <| String.fromInt <| Time.posixToMillis todo.createdAt
             , text " "
             , text todo.content
