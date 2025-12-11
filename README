@@ -1,3 +1,7 @@
 ぼくがかんがえたさいきょうのTODO管理ソフトウェア
 
 powerd by Elm + C#
+
+1. run postgresql
+2. cd backend && dotnet watch dev
+3. cd frontend && make watch
