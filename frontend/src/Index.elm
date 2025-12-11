@@ -1,7 +1,7 @@
 module Index exposing (..)
 
 import Browser
-import Common exposing (TodoItem, listDecoder, navbar)
+import Common exposing (TodoItem, jst, listDecoder, navbar)
 import Html exposing (Html, a, div, text)
 import Html.Attributes exposing (class, href)
 import Http
@@ -102,8 +102,16 @@ todoview todo =
     div [ class "todo-item" ]
         [ a [ href ("/todo/" ++ String.fromInt todo.id), class "todo-link" ] [ text <| "/todo/" ++ String.fromInt todo.id ]
         , div []
-            [ text <| String.fromInt <| Time.posixToMillis todo.createdAt
+            [ text <| String.fromInt <| Time.toYear jst todo.createdAt
             , text " "
-            , text todo.content
+            , text <| Debug.toString <| Time.toMonth jst todo.createdAt
+            , text " "
+            , text <| String.fromInt <| Time.toDay jst todo.createdAt
+            , text " "
+            , text <| String.fromInt <| Time.toHour jst todo.createdAt
+            , text ":"
+            , text <| String.fromInt <| Time.toMinute jst todo.createdAt
+            , text " "
+            , text todo.title
             ]
         ]

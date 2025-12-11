@@ -1,4 +1,4 @@
-module Common exposing (TodoItem, listDecoder, navbar, todoDecoder)
+module Common exposing (TodoItem, jst, listDecoder, navbar, todoDecoder)
 
 import Html exposing (a, div, text)
 import Html.Attributes exposing (class, href)
@@ -37,3 +37,8 @@ todoDecoder =
 listDecoder : Decoder (List TodoItem)
 listDecoder =
     field "result" (list todoDecoder)
+
+
+jst : Time.Zone
+jst =
+    Time.customZone (9 * 60) []
