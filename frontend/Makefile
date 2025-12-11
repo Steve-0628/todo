@@ -6,10 +6,12 @@ index.js: src/Index.elm src/Common.elm
 	elm make src/Index.elm --output=dist/index.js
 
 new.js: src/New.elm src/Common.elm
-	elm make src/New.elm --output=dist/new.js
+	elm make src/New.elm --output=dist/new/new.js
 
 html: index.html new.html
-	cp index.html new.html dist/
+	mkdir -p dist/new
+	cp index.html dist/
+	cp new.html dist/new/index.html
 
 css: style.css
 	cp style.css dist/

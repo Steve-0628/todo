@@ -8,8 +8,8 @@ import Time
 
 navbar =
     div [ class "navbar" ]
-        [ a [ href "index.html" ] [ text "Todo App" ]
-        , a [ href "new.html" ] [ text "+ New Todo" ]
+        [ a [ href "/" ] [ text "Todo App" ]
+        , a [ href "/new" ] [ text "+ New Todo" ]
         ]
 
 
