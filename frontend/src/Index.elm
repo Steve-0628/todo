@@ -100,9 +100,9 @@ view model =
 todoview : TodoItem -> Html msg
 todoview todo =
     div [ class "todo-item" ]
-        [ a [ href ("/detail/" ++ String.fromInt todo.id), class "todo-link" ] [ text <| todo.title ]
-        , div []
-            [ text <| String.fromInt <| Time.toYear jst todo.createdAt
+        [ a [ href ("/detail/" ++ String.fromInt todo.id) ]
+            [ div [ class "todo-link" ] [ text todo.title ]
+            , text <| String.fromInt <| Time.toYear jst todo.createdAt
             , text "-"
             , text <| Debug.toString <| Time.toMonth jst todo.createdAt
             , text "-"
@@ -114,4 +114,6 @@ todoview todo =
             , text " "
             , text <| ("#" ++ (String.fromInt <| todo.id))
             ]
+        , div []
+            []
         ]
