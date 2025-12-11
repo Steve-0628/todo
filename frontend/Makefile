@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean watch
 
 all: index.js new.js html css
 
@@ -16,3 +16,9 @@ css: style.css
 
 clean:
 	rm -rf dist
+
+watch:
+	while true; do \
+		$(MAKE) all; \
+		inotifywait -qre close_write src/ *.css *.html; \
+	done
