@@ -3,9 +3,10 @@ module New exposing (..)
 import Browser
 import Common exposing (TodoItem, navbar)
 import Html exposing (Html, a, br, button, div, input, text)
-import Html.Attributes exposing (href, type_, value)
+import Html.Attributes exposing (href, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
+import Json.Encode as Encode
 import Time
 
 
@@ -31,7 +32,7 @@ type alias Model =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( Model
-        (TodoItem 1 (Time.millisToPosix 0) "" (Time.millisToPosix 0) (Time.millisToPosix 0))
+        (TodoItem 1 (Time.millisToPosix 0) "" "content" (Time.millisToPosix 0) False)
     , Cmd.none
     )
 
@@ -59,13 +60,18 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         TextChange s ->
-            ( updateWip (\t -> { t | content = s }) model, Cmd.none )
+            ( updateWip (\t -> { t | title = s }) model, Cmd.none )
 
         Send ->
             ( model
             , Http.post
-                { url = "http://localhost"
-                , body = Http.stringBody "" ""
+                { url = "http://localhost:5181/api/todos"
+                , body =
+                    Http.jsonBody
+                        (Encode.object
+                            [ ( "title", Encode.string model.wipTodo.title )
+                            ]
+                        )
                 , expect = Http.expectWhatever GotResponse
                 }
             )
@@ -86,10 +92,10 @@ view model =
             [ navbar
             , div []
                 [ div [] [ text "reset" ]
-                , text model.wipTodo.content
+                , text model.wipTodo.title
                 ]
             , div [] <|
-                [ input [ type_ "text", value model.wipTodo.content, onInput TextChange ] []
+                [ input [ type_ "text", value model.wipTodo.title, onInput TextChange, placeholder "put your title here" ] []
                 , input [ type_ "date" ] []
                 , button [ onClick Send ] [ text "send" ]
                 ]

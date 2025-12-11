@@ -1,9 +1,10 @@
 module Index exposing (..)
 
 import Browser
-import Common exposing (TodoItem, navbar)
+import Common exposing (TodoItem, listDecoder, navbar)
 import Html exposing (Html, a, br, button, div, text)
 import Html.Attributes exposing (href)
+import Http
 import Time
 
 
@@ -28,13 +29,12 @@ type alias Model =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( Model
-        (Just
-            [ TodoItem 0 (Time.millisToPosix 0) "todo1" (Time.millisToPosix 0) (Time.millisToPosix 0)
-            , TodoItem 1 (Time.millisToPosix 0) "todo2" (Time.millisToPosix 0) (Time.millisToPosix 0)
-            ]
-        )
+        Nothing
         0
-    , Cmd.none
+    , Http.get
+        { url = "http://localhost:5181/api/todos?page=0"
+        , expect = Http.expectJson GotResponse listDecoder
+        }
     )
 
 
@@ -48,6 +48,7 @@ init _ =
 
 type Msg
     = SetPage Int
+    | GotResponse (Result Http.Error (List TodoItem))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -55,6 +56,22 @@ update msg model =
     case msg of
         SetPage page ->
             ( Model model.todos page, Cmd.none )
+
+        GotResponse resp ->
+            case resp of
+                Ok str ->
+                    let
+                        _ =
+                            Debug.log "" str
+                    in
+                    ( { model | todos = Just str }, Cmd.none )
+
+                Err a ->
+                    let
+                        _ =
+                            Debug.log "errrrr" a
+                    in
+                    ( model, Cmd.none )
 
 
 
@@ -80,7 +97,7 @@ view model =
                         List.map (\todo -> todoview todo) todos
 
                     Nothing ->
-                        [ div [] [] ]
+                        [ div [] [ text "Loading..." ] ]
             ]
         ]
     }
@@ -90,8 +107,8 @@ todoview : TodoItem -> Html msg
 todoview todo =
     div []
         [ a [ href ("/todo/" ++ String.fromInt todo.id) ] [ text <| "/todo/" ++ String.fromInt todo.id ]
-        , br [] []
+        , text " "
         , text <| String.fromInt <| Time.posixToMillis todo.createdAt
-        , br [] []
+        , text " "
         , text todo.content
         ]
