@@ -1,7 +1,7 @@
 module Index exposing (..)
 
 import Browser
-import Common exposing (TodoItem, jst, listDecoder, navbar)
+import Common exposing (TodoItem, api, jst, listDecoder, navbar)
 import Html exposing (Html, a, div, text)
 import Html.Attributes exposing (class, href)
 import Http
@@ -32,7 +32,7 @@ init _ =
         Nothing
         0
     , Http.get
-        { url = "http://localhost:5181/api/todos?page=0"
+        { url = api ++ "/todos?page=0"
         , expect = Http.expectJson GotResponse listDecoder
         }
     )
@@ -80,7 +80,7 @@ update msg model =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "Hello, Elm!"
+    { title = "todo app"
     , body =
         [ div []
             [ navbar
@@ -100,18 +100,18 @@ view model =
 todoview : TodoItem -> Html msg
 todoview todo =
     div [ class "todo-item" ]
-        [ a [ href ("/todo/" ++ String.fromInt todo.id), class "todo-link" ] [ text <| "/todo/" ++ String.fromInt todo.id ]
+        [ a [ href ("/detail/" ++ String.fromInt todo.id), class "todo-link" ] [ text <| todo.title ]
         , div []
             [ text <| String.fromInt <| Time.toYear jst todo.createdAt
-            , text " "
+            , text "-"
             , text <| Debug.toString <| Time.toMonth jst todo.createdAt
-            , text " "
+            , text "-"
             , text <| String.fromInt <| Time.toDay jst todo.createdAt
             , text " "
             , text <| String.fromInt <| Time.toHour jst todo.createdAt
             , text ":"
             , text <| String.fromInt <| Time.toMinute jst todo.createdAt
             , text " "
-            , text todo.title
+            , text <| ("#" ++ (String.fromInt <| todo.id))
             ]
         ]

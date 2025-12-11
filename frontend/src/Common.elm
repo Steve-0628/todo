@@ -1,4 +1,4 @@
-module Common exposing (TodoItem, jst, listDecoder, navbar, todoDecoder)
+module Common exposing (TodoItem, api, jst, listDecoder, navbar, todoDecoder)
 
 import Html exposing (a, div, text)
 import Html.Attributes exposing (class, href)
@@ -42,3 +42,8 @@ listDecoder =
 jst : Time.Zone
 jst =
     Time.customZone (9 * 60) []
+
+
+api : String
+api =
+    "http://localhost:5181/api"

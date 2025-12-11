@@ -1,7 +1,8 @@
 module New exposing (..)
 
 import Browser
-import Common exposing (TodoItem, navbar)
+import Browser.Navigation
+import Common exposing (TodoItem, api, navbar)
 import Html exposing (button, div, input, text)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -65,7 +66,7 @@ update msg model =
         Send ->
             ( model
             , Http.post
-                { url = "http://localhost:5181/api/todos"
+                { url = api ++ "/todos"
                 , body =
                     Http.jsonBody
                         (Encode.object
@@ -76,8 +77,13 @@ update msg model =
                 }
             )
 
-        GotResponse _ ->
-            ( model, Cmd.none )
+        GotResponse res ->
+            case res of
+                Ok _ ->
+                    ( model, Browser.Navigation.load "/" )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
 
 
