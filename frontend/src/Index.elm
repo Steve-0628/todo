@@ -2,8 +2,8 @@ module Index exposing (..)
 
 import Browser
 import Common exposing (TodoItem, listDecoder, navbar)
-import Html exposing (Html, a, br, button, div, text)
-import Html.Attributes exposing (href)
+import Html exposing (Html, a, div, text)
+import Html.Attributes exposing (class, href)
 import Http
 import Time
 
@@ -84,20 +84,14 @@ view model =
     , body =
         [ div []
             [ navbar
-            , div []
-                [ div [] [ text "reset" ]
-                ]
-            , div []
-                [ text "Page"
-                , text (String.fromInt model.page)
-                ]
-            , div [] <|
+            , div [ class "header-title" ] [ text "My Todos" ]
+            , div [ class "todo-list" ] <|
                 case model.todos of
                     Just todos ->
                         List.map (\todo -> todoview todo) todos
 
                     Nothing ->
-                        [ div [] [ text "Loading..." ] ]
+                        [ div [ class "loading" ] [ text "Loading..." ] ]
             ]
         ]
     }
@@ -105,10 +99,11 @@ view model =
 
 todoview : TodoItem -> Html msg
 todoview todo =
-    div []
-        [ a [ href ("/todo/" ++ String.fromInt todo.id) ] [ text <| "/todo/" ++ String.fromInt todo.id ]
-        , text " "
-        , text <| String.fromInt <| Time.posixToMillis todo.createdAt
-        , text " "
-        , text todo.content
+    div [ class "todo-item" ]
+        [ a [ href ("/todo/" ++ String.fromInt todo.id), class "todo-link" ] [ text <| "/todo/" ++ String.fromInt todo.id ]
+        , div [ class "todo-meta" ]
+            [ text <| String.fromInt <| Time.posixToMillis todo.createdAt
+            , text " "
+            , text todo.content
+            ]
         ]

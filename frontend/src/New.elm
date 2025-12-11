@@ -2,8 +2,8 @@ module New exposing (..)
 
 import Browser
 import Common exposing (TodoItem, navbar)
-import Html exposing (Html, a, br, button, div, input, text)
-import Html.Attributes exposing (href, placeholder, type_, value)
+import Html exposing (button, div, input, text)
+import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Encode as Encode
@@ -90,14 +90,11 @@ view model =
     , body =
         [ div []
             [ navbar
-            , div []
-                [ div [] [ text "reset" ]
-                , text model.wipTodo.title
-                ]
+            , div [ class "header-title" ] [ text "Create New Todo" ]
             , div [] <|
-                [ input [ type_ "text", value model.wipTodo.title, onInput TextChange, placeholder "put your title here" ] []
+                [ input [ type_ "text", value model.wipTodo.title, onInput TextChange, placeholder "Enter title..." ] []
                 , input [ type_ "date" ] []
-                , button [ onClick Send ] [ text "send" ]
+                , button [ onClick Send ] [ text "Create Todo" ]
                 ]
             ]
         ]

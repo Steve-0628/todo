@@ -1,0 +1,50 @@
+/* Minimal Styles */
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: #333;
+}
+
+/* Navbar links */
+.navbar {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.navbar a {
+    margin-right: 1rem;
+    color: #000;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+
+
+input, button {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.todo-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.todo-link {
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+
+.header-title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}

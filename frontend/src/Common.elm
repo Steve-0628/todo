@@ -1,13 +1,15 @@
 module Common exposing (TodoItem, listDecoder, navbar, todoDecoder)
 
-import Html exposing (div, text)
+import Html exposing (a, div, text)
+import Html.Attributes exposing (class, href)
 import Json.Decode exposing (Decoder, bool, field, int, list, map, map6, oneOf, string, succeed)
 import Time
 
 
 navbar =
-    div []
-        [ text "Hello, I am the nav!"
+    div [ class "navbar" ]
+        [ a [ href "index.html" ] [ text "Todo App" ]
+        , a [ href "new.html" ] [ text "+ New Todo" ]
         ]
 
 
