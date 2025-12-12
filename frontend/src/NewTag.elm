@@ -79,7 +79,7 @@ update msg model =
         GotResponse res ->
             case res of
                 Ok _ ->
-                    ( model, Cmd.none )
+                    ( Model (TagItem 0 ""), Cmd.none )
 
                 -- ( model, Browser.Navigation.load "/" )
                 Err _ ->
