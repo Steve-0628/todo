@@ -91,6 +91,7 @@ update msg model =
                     Http.jsonBody
                         (Encode.object
                             [ ( "title", Encode.string model.wipTodo.title )
+                            , ( "tags", Encode.list (\t -> Encode.object [ ( "id", Encode.int t.id ), ( "name", Encode.string t.name ) ]) model.wipTodo.tags )
                             ]
                         )
                 , expect = Http.expectWhatever GotResponse
