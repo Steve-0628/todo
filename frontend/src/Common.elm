@@ -10,6 +10,7 @@ navbar =
     div [ class "navbar" ]
         [ a [ href "/" ] [ text "Todo App" ]
         , a [ href "/new" ] [ text "+ New Todo" ]
+        , a [ href "/tag" ] [ text "+ Add Tag" ]
         ]
 
 

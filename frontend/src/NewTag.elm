@@ -2,13 +2,12 @@ module NewTag exposing (..)
 
 import Browser
 import Browser.Navigation
-import Common exposing (TodoItem, api, navbar)
+import Common exposing (TagItem, api, navbar)
 import Html exposing (button, div, input, text)
 import Html.Attributes exposing (class, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Encode as Encode
-import Time
 
 
 main : Program () Model Msg
@@ -26,14 +25,14 @@ main =
 
 
 type alias Model =
-    { wipTodo : TodoItem
+    { wipTag : TagItem
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( Model
-        (TodoItem 1 (Time.millisToPosix 0) "" "content" (Time.millisToPosix 0) False)
+        (TagItem 0 "")
     , Cmd.none
     )
 
@@ -52,25 +51,25 @@ type Msg
     | GotResponse (Result Http.Error ())
 
 
-updateWip : (TodoItem -> TodoItem) -> Model -> Model
+updateWip : (TagItem -> TagItem) -> Model -> Model
 updateWip transform model =
-    { model | wipTodo = transform model.wipTodo }
+    { model | wipTag = transform model.wipTag }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         TextChange s ->
-            ( updateWip (\t -> { t | title = s }) model, Cmd.none )
+            ( updateWip (\t -> { t | name = s }) model, Cmd.none )
 
         Send ->
             ( model
             , Http.post
-                { url = api ++ "/todos"
+                { url = api ++ "/tags"
                 , body =
                     Http.jsonBody
                         (Encode.object
-                            [ ( "title", Encode.string model.wipTodo.title )
+                            [ ( "name", Encode.string model.wipTag.name )
                             ]
                         )
                 , expect = Http.expectWhatever GotResponse
@@ -80,8 +79,9 @@ update msg model =
         GotResponse res ->
             case res of
                 Ok _ ->
-                    ( model, Browser.Navigation.load "/" )
+                    ( model, Cmd.none )
 
+                -- ( model, Browser.Navigation.load "/" )
                 Err _ ->
                     ( model, Cmd.none )
 
@@ -92,15 +92,14 @@ update msg model =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "new todo page"
+    { title = "new tag page"
     , body =
         [ div []
             [ navbar
-            , div [ class "header-title" ] [ text "Create New Todo" ]
+            , div [ class "header-title" ] [ text "Create New Tag" ]
             , div [] <|
-                [ input [ type_ "text", value model.wipTodo.title, onInput TextChange, placeholder "Enter title..." ] []
-                , input [ type_ "date" ] []
-                , button [ onClick Send ] [ text "Create Todo" ]
+                [ input [ type_ "text", value model.wipTag.name, onInput TextChange, placeholder "Enter name..." ] []
+                , button [ onClick Send ] [ text "Create tag" ]
                 ]
             ]
         ]
