@@ -1,8 +1,8 @@
-module Common exposing (TodoItem, api, jst, listDecoder, navbar, todoDecoder)
+module Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar, todoDecoder)
 
 import Html exposing (a, div, text)
 import Html.Attributes exposing (class, href)
-import Json.Decode exposing (Decoder, bool, field, int, list, map, map6, oneOf, string, succeed)
+import Json.Decode exposing (Decoder, bool, field, int, list, map, map2, map6, map7, oneOf, string, succeed)
 import Time
 
 
@@ -20,23 +20,38 @@ type alias TodoItem =
     , content : String
     , expectedDue : Time.Posix
     , isComplete : Bool
+    , tags : List TagItem
     }
 
 
 todoDecoder : Decoder TodoItem
 todoDecoder =
-    map6 TodoItem
+    map7 TodoItem
         (field "id" int)
         (field "createdAt" (map Time.millisToPosix int))
         (field "title" string)
         (oneOf [ field "content" string, succeed "" ])
         (field "expectedDue" (map Time.millisToPosix int))
         (field "isComplete" bool)
+        (field "tags" (list tagDecoder))
 
 
 listDecoder : Decoder (List TodoItem)
 listDecoder =
     field "result" (list todoDecoder)
+
+
+type alias TagItem =
+    { id : Int
+    , name : String
+    }
+
+
+tagDecoder : Decoder TagItem
+tagDecoder =
+    map2 TagItem
+        (field "id" int)
+        (field "name" string)
 
 
 jst : Time.Zone

@@ -1,8 +1,8 @@
 module Index exposing (..)
 
 import Browser
-import Common exposing (TodoItem, api, jst, listDecoder, navbar)
-import Html exposing (Html, a, div, text)
+import Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar)
+import Html exposing (Html, a, div, span, text)
 import Html.Attributes exposing (class, href)
 import Http
 import Time
@@ -113,7 +113,13 @@ todoview todo =
             , text <| String.fromInt <| Time.toMinute jst todo.createdAt
             , text " "
             , text <| ("#" ++ (String.fromInt <| todo.id))
+            , span [] <| List.map (\tag -> tagview tag) todo.tags
             ]
         , div []
             []
         ]
+
+
+tagview : TagItem -> Html msg
+tagview tag =
+    span [] [ text tag.name ]

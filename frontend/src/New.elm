@@ -33,7 +33,7 @@ type alias Model =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( Model
-        (TodoItem 1 (Time.millisToPosix 0) "" "content" (Time.millisToPosix 0) False)
+        (TodoItem 1 (Time.millisToPosix 0) "" "content" (Time.millisToPosix 0) False [])
     , Cmd.none
     )
 
