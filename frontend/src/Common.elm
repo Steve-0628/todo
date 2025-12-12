@@ -2,7 +2,7 @@ module Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar, todoDe
 
 import Html exposing (a, div, text)
 import Html.Attributes exposing (class, href)
-import Json.Decode exposing (Decoder, bool, field, int, list, map, map2, map6, map7, oneOf, string, succeed)
+import Json.Decode exposing (Decoder, bool, field, int, list, map, map2, map7, oneOf, string, succeed)
 import Time
 
 
