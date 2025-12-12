@@ -2,12 +2,15 @@ module New exposing (..)
 
 import Browser
 import Browser.Navigation
-import Common exposing (TodoItem, api, navbar)
-import Html exposing (button, div, input, text)
-import Html.Attributes exposing (class, placeholder, type_, value)
+import Common exposing (TagItem, TodoItem, api, navbar, tagDecoder)
+import Html exposing (button, div, input, option, select, span, text)
+import Html.Attributes exposing (class, multiple, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
+import Json.Decode
 import Json.Encode as Encode
+import MultiSelect
+import String
 import Time
 
 
@@ -27,6 +30,7 @@ main =
 
 type alias Model =
     { wipTodo : TodoItem
+    , tags : List TagItem
     }
 
 
@@ -34,7 +38,8 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( Model
         (TodoItem 1 (Time.millisToPosix 0) "" "content" (Time.millisToPosix 0) False [])
-    , Cmd.none
+        []
+    , Http.get { url = api ++ "/tags", expect = Http.expectJson GotTagResponse (Json.Decode.list tagDecoder) }
     )
 
 
@@ -48,8 +53,10 @@ init _ =
 
 type Msg
     = TextChange String
+    | TagChange (List String)
     | Send
     | GotResponse (Result Http.Error ())
+    | GotTagResponse (Result Http.Error (List TagItem))
 
 
 updateWip : (TodoItem -> TodoItem) -> Model -> Model
@@ -62,6 +69,19 @@ update msg model =
     case msg of
         TextChange s ->
             ( updateWip (\t -> { t | title = s }) model, Cmd.none )
+
+        TagChange s ->
+            let
+                _ =
+                    Debug.log "" s
+
+                newTodo =
+                    model.wipTodo
+
+                t =
+                    { newTodo | tags = List.map (\t2 -> { id = String.toInt t2 |> Maybe.withDefault 0, name = "a" }) s }
+            in
+            ( { model | wipTodo = t }, Cmd.none )
 
         Send ->
             ( model
@@ -80,7 +100,16 @@ update msg model =
         GotResponse res ->
             case res of
                 Ok _ ->
-                    ( model, Browser.Navigation.load "/" )
+                    ( model, Cmd.none )
+
+                -- ( model, Browser.Navigation.load "/" )
+                Err _ ->
+                    ( model, Cmd.none )
+
+        GotTagResponse res ->
+            case res of
+                Ok tags ->
+                    ( { model | tags = tags }, Cmd.none )
 
                 Err _ ->
                     ( model, Cmd.none )
@@ -100,6 +129,13 @@ view model =
             , div [] <|
                 [ input [ type_ "text", value model.wipTodo.title, onInput TextChange, placeholder "Enter title..." ] []
                 , input [ type_ "date" ] []
+                , MultiSelect.multiSelect { items = List.map (\t -> { value = String.fromInt t.id, text = t.name, enabled = True }) model.tags, onChange = TagChange } [] (List.map (\t -> String.fromInt t.id) model.wipTodo.tags)
+
+                -- , select [ multiple True, on TagChange ]
+                --     (List.map
+                --         (\e -> option [ value <| String.fromInt <| e.id ] [ text e.name ])
+                --         model.tags
+                --     )
                 , button [ onClick Send ] [ text "Create Todo" ]
                 ]
             ]

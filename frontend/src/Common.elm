@@ -1,4 +1,4 @@
-module Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar, todoDecoder)
+module Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar, tagDecoder, todoDecoder)
 
 import Html exposing (a, div, text)
 import Html.Attributes exposing (class, href)
