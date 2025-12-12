@@ -5,3 +5,8 @@ powerd by Elm + C#
 1. run postgresql
 2. cd backend && dotnet watch dev
 3. cd frontend && make watch
+
+to create migration
+1. dotnet ef migrations add "name"
+2. dotnet ef database update
+3. check migration files and results in the database is correct
