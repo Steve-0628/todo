@@ -60,17 +60,9 @@ update msg model =
         GotResponse resp ->
             case resp of
                 Ok str ->
-                    let
-                        _ =
-                            Debug.log "" str
-                    in
                     ( { model | todos = Just str }, Cmd.none )
 
-                Err a ->
-                    let
-                        _ =
-                            Debug.log "errrrr" a
-                    in
+                Err _ ->
                     ( model, Cmd.none )
 
 

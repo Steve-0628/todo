@@ -72,9 +72,6 @@ update msg model =
 
         TagChange s ->
             let
-                _ =
-                    Debug.log "" s
-
                 newTodo =
                     model.wipTodo
 
