@@ -11,7 +11,7 @@
   <div id="elm-node"></div>
   <script src="index.js"></script>
   <script>
-    var app = Elm.Index.init({
+    var app = Elm[Object.keys(Elm)[0]].init({
       node: document.getElementById('elm-node')
     });
   </script>
