@@ -39,15 +39,35 @@ app.MapPost("/api/todos", async (
     var parsed = new Todo
     {
         Title = req.Title,
+        Content = req.Content,
     };
+    // parsed.Tags.Add(new Tag { Name = "" });
     var res = db.Add(req);
     await db.SaveChangesAsync();
     return res.Entity.Content;
 });
 
+app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
+{
+    var todo = await db.Todos.FindAsync(id);
+    if (todo is null)
+    {
+        return Results.NotFound();
+    }
+
+    todo.Title = req.Title;
+    todo.Content = req.Content;
+    todo.ExpectedDue = req.ExpectedDue;
+    todo.IsComplete = req.IsComplete;
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(todo);
+});
+
 app.MapGet("/api/todos/{id}", async (int Id, TodoDb db) =>
 {
-    var todo = await db.FindAsync<Todo>(Id);
+    var todo = await db.Todos.FindAsync(Id);
     return new
     {
         Found = todo != null,
