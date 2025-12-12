@@ -11,7 +11,7 @@ new.js: src/New.elm src/Common.elm
 newtag.js: src/NewTag.elm src/Common.elm
 	elm make src/NewTag.elm --output=dist/tag/index.js
 
-html: index.html new.html
+html: index.html
 	mkdir -p dist/new
 	mkdir -p dist/tag
 	cp index.html dist/
