@@ -139,7 +139,6 @@ class Tag
 {
     public int Id { get; set; }
     public required string Name { get; set; }
-    // public List<Todo> Todos { get; } = [];
 }
 
 class TodoDb(DbContextOptions<TodoDb> options) : DbContext(options)
