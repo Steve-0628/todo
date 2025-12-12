@@ -76,6 +76,31 @@ app.MapGet("/api/todos/{id}", async (int Id, TodoDb db) =>
 });
 
 
+app.MapGet("/api/tags", async (TodoDb db) =>
+{
+    return await db.Tags.ToListAsync();
+});
+
+app.MapPost("/api/tags", async (Tag req, TodoDb db) =>
+{
+    db.Tags.Add(req);
+    await db.SaveChangesAsync();
+    return Results.Created($"/api/tags/{req.Id}", req);
+});
+
+app.MapPatch("/api/tags/{id}", async (int id, Tag req, TodoDb db) =>
+{
+    var tag = await db.Tags.FindAsync(id);
+    if (tag is null)
+    {
+        return Results.NotFound();
+    }
+
+    tag.Name = req.Name;
+    await db.SaveChangesAsync();
+    return Results.Ok(tag);
+});
+
 app.Run();
 
 class Todo
