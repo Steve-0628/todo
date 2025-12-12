@@ -66,9 +66,18 @@ class Todo
     public string Content { get; set; } = "";
     public long ExpectedDue { get; set; }
     public bool IsComplete { get; set; } = false;
+    public List<Tag> Tags { get; } = [];
+}
+
+class Tag
+{
+    public int Id { get; set; }
+    public required string Name { get; set; }
+    public List<Todo> Todos { get; } = [];
 }
 
 class TodoDb(DbContextOptions<TodoDb> options) : DbContext(options)
 {
     public DbSet<Todo> Todos => Set<Todo>();
+    public DbSet<Tag> Tags => Set<Tag>();
 }
