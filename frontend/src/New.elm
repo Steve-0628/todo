@@ -101,9 +101,8 @@ update msg model =
         GotResponse res ->
             case res of
                 Ok _ ->
-                    ( model, Cmd.none )
+                    ( model, Browser.Navigation.load "/" )
 
-                -- ( model, Browser.Navigation.load "/" )
                 Err _ ->
                     ( model, Cmd.none )
 
