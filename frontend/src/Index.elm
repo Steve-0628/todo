@@ -122,4 +122,4 @@ todoview todo =
 
 tagview : TagItem -> Html msg
 tagview tag =
-    span [] [ text tag.name ]
+    span [ class "tag" ] [ text tag.name ]

@@ -1,4 +1,8 @@
 /* Minimal Styles */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: system-ui, -apple-system, sans-serif;
     line-height: 1.5;
@@ -27,9 +31,18 @@ body {
 
 
 
-input, button {
+input, button, select {
     font-size: 1rem;
     margin-bottom: 0.5rem;
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.tag {
+    margin-left: 0.5rem;
+    color: #777;
+    font-size: 0.9em;
 }
 
 .todo-item {
