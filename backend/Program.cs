@@ -15,7 +15,7 @@ app.UseCors("_allowAll");
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TodoDb>();
-    db.Database.EnsureCreated();
+    // db.Database.EnsureCreated();
 }
 
 
@@ -23,7 +23,7 @@ app.MapGet("/", () => "Hello World!");
 
 app.MapGet("/api/todos", async (int page, TodoDb db) =>
 {
-    var res = await db.Todos.ToListAsync();
+    var res = await db.Todos.Include(t => t.Tags).ToListAsync();
     return new
     {
         Result = res.ToArray(),
@@ -40,9 +40,19 @@ app.MapPost("/api/todos", async (
     {
         Title = req.Title,
         Content = req.Content,
+        ExpectedDue = req.ExpectedDue
     };
-    // parsed.Tags.Add(new Tag { Name = "" });
-    var res = db.Add(req);
+
+    req.Tags.ForEach(t =>
+    {
+        var tag = db.Tags.Find(t.Id);
+        if (tag != null)
+        {
+            parsed.Tags.Add(tag);
+        }
+    });
+
+    var res = db.Add(parsed);
     await db.SaveChangesAsync();
     return res.Entity.Content;
 });
@@ -60,6 +70,17 @@ app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
     todo.ExpectedDue = req.ExpectedDue;
     todo.IsComplete = req.IsComplete;
 
+    todo.Tags.Clear();
+
+    req.Tags.ForEach(t =>
+    {
+        var tag = db.Tags.Find(t.Id);
+        if (tag != null)
+        {
+            todo.Tags.Add(tag);
+        }
+    });
+
     await db.SaveChangesAsync();
 
     return Results.Ok(todo);
@@ -67,7 +88,7 @@ app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
 
 app.MapGet("/api/todos/{id}", async (int Id, TodoDb db) =>
 {
-    var todo = await db.Todos.FindAsync(Id);
+    var todo = db.Todos.Find(Id);
     return new
     {
         Found = todo != null,
@@ -111,14 +132,14 @@ class Todo
     public string Content { get; set; } = "";
     public long ExpectedDue { get; set; }
     public bool IsComplete { get; set; } = false;
-    public List<Tag> Tags { get; } = [];
+    public List<Tag> Tags { get; set; } = [];
 }
 
 class Tag
 {
     public int Id { get; set; }
     public required string Name { get; set; }
-    public List<Todo> Todos { get; } = [];
+    // public List<Todo> Todos { get; } = [];
 }
 
 class TodoDb(DbContextOptions<TodoDb> options) : DbContext(options)
