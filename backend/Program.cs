@@ -133,6 +133,9 @@ class Todo
     public long ExpectedDue { get; set; }
     public bool IsComplete { get; set; } = false;
     public List<Tag> Tags { get; set; } = [];
+    public int? ParentTodoId { get; set; }
+    public Todo? ParentTodo { get; set; }
+    public List<Todo> ChildTodos { get; set; } = [];
 }
 
 class Tag
