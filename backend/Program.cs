@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,14 +23,18 @@ using (var scope = app.Services.CreateScope())
 
 app.MapGet("/", () => "Hello World!");
 
+var jsonOptions = new JsonSerializerOptions
+{
+    ReferenceHandler = ReferenceHandler.IgnoreCycles
+};
+
 app.MapGet("/api/todos", async (int page, TodoDb db) =>
 {
     var res = await db.Todos.Include(t => t.Tags).ToListAsync();
-    return new
+    return Results.Json(new
     {
         Result = res.ToArray(),
-    }
-    ;
+    }, jsonOptions);
 });
 
 app.MapPost("/api/todos", async (
