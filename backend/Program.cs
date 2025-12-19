@@ -10,9 +10,22 @@ builder.Services.AddCors(options =>
     {
         options.AddPolicy("_allowAll", policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
     });
+// Configure JSON options to use PascalCase (default for C# properties) and ignore cycles
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; // Use CamelCase
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 var app = builder.Build();
 
 app.UseCors("_allowAll");
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        System.IO.Path.Combine(builder.Environment.ContentRootPath, "../frontend/dist"))
+});
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -21,20 +34,37 @@ using (var scope = app.Services.CreateScope())
 }
 
 
-app.MapGet("/", () => "Hello World!");
-
-var jsonOptions = new JsonSerializerOptions
+app.MapGet("/", async (HttpContext context) =>
 {
-    ReferenceHandler = ReferenceHandler.IgnoreCycles
-};
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync("../frontend/dist/index.html");
+});
+
+app.MapGet("/new", async (HttpContext context) =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync("../frontend/dist/new/index.html");
+});
+
+app.MapGet("/tag", async (HttpContext context) =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync("../frontend/dist/tag/index.html");
+});
+
+app.MapGet("/detail/{id:int}", async (HttpContext context) =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync("../frontend/dist/detail/index.html");
+});
 
 app.MapGet("/api/todos", async (int page, TodoDb db) =>
 {
     var res = await db.Todos.Include(t => t.Tags).ToListAsync();
-    return Results.Json(new
+    return Results.Ok(new
     {
         Result = res.ToArray(),
-    }, jsonOptions);
+    });
 });
 
 app.MapPost("/api/todos", async (
@@ -60,7 +90,7 @@ app.MapPost("/api/todos", async (
 
     var res = db.Add(parsed);
     await db.SaveChangesAsync();
-    return res.Entity.Content;
+    return Results.Ok(res.Entity.Content);
 });
 
 app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
@@ -95,11 +125,15 @@ app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
 app.MapGet("/api/todos/{id}", async (int Id, TodoDb db) =>
 {
     var todo = db.Todos.Find(Id);
-    return new
+    if (todo is null)
     {
-        Found = todo != null,
-        Result = todo
-    };
+        return Results.NotFound();
+    } else {
+        return Results.Json(new
+        {
+            Result = todo
+        });
+    }
 });
 
 

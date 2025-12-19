@@ -1,4 +1,4 @@
-module Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar, tagDecoder, todoDecoder)
+module Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar, tagDecoder, timeToString, todoDecoder)
 
 import Html exposing (a, div, text)
 import Html.Attributes exposing (class, href)
@@ -9,8 +9,8 @@ import Time
 navbar =
     div [ class "navbar" ]
         [ a [ href "/" ] [ text "Todo App" ]
-        , a [ href "/new" ] [ text "+ New Todo" ]
-        , a [ href "/tag" ] [ text "+ Add Tag" ]
+        , a [ href "/new/" ] [ text "+ New Todo" ]
+        , a [ href "/tag/" ] [ text "+ Add Tag" ]
         ]
 
 
