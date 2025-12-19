@@ -63,3 +63,24 @@ jst =
 api : String
 api =
     "http://localhost:5181/api"
+
+
+timeToString : Time.Posix -> String
+timeToString time =
+    let
+        year =
+            String.fromInt (Time.toYear jst time)
+
+        month =
+            Debug.toString (Time.toMonth jst time)
+
+        day =
+            String.fromInt (Time.toDay jst time)
+
+        hour =
+            String.padLeft 2 '0' (String.fromInt (Time.toHour jst time))
+
+        minute =
+            String.padLeft 2 '0' (String.fromInt (Time.toMinute jst time))
+    in
+    year ++ "-" ++ month ++ "-" ++ day ++ " " ++ hour ++ ":" ++ minute

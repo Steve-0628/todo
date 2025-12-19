@@ -1,11 +1,10 @@
 module Index exposing (..)
 
 import Browser
-import Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar)
+import Common exposing (TagItem, TodoItem, api, listDecoder, navbar, timeToString)
 import Html exposing (Html, a, div, span, text)
 import Html.Attributes exposing (class, href)
 import Http
-import Time
 
 
 main : Program () Model Msg
@@ -94,17 +93,7 @@ todoview todo =
     div [ class "todo-item" ]
         [ a [ href ("/detail/" ++ String.fromInt todo.id) ]
             [ div [ class "todo-link" ] [ text todo.title ]
-            , text <| String.fromInt <| Time.toYear jst todo.createdAt
-            , text "-"
-            , text <| Debug.toString <| Time.toMonth jst todo.createdAt
-            , text "-"
-            , text <| String.fromInt <| Time.toDay jst todo.createdAt
-            , text " "
-            , text <| String.fromInt <| Time.toHour jst todo.createdAt
-            , text ":"
-            , text <| String.fromInt <| Time.toMinute jst todo.createdAt
-            , text " "
-            , text <| ("#" ++ (String.fromInt <| todo.id))
+            , text <| timeToString todo.createdAt
             , span [] <| List.map (\tag -> tagview tag) todo.tags
             ]
         , div []
