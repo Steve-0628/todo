@@ -47,4 +47,4 @@ jobs:
         with:
           context: ${{ matrix.context }}
           push: true
-          tags: ghcr.io/${{ steps.lowercase.outputs.lowercase }}:${{ matrix.context }}-${{ steps.commithash.outputs.git_hash }}
+          tags: ghcr.io/${{ steps.lowercase.outputs.lowercase }}:${{ matrix.image_suffix }}-${{ steps.commithash.outputs.git_hash }}
