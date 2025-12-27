@@ -45,5 +45,6 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v6
         with:
+          context: ${{ matrix.context }}
           push: true
           tags: ghcr.io/${{ steps.lowercase.outputs.lowercase }}:${{ steps.commithash.outputs.git_hash }}
