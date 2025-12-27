@@ -23,36 +23,27 @@ jobs:
             image_suffix: frontend
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # Fix for uppercase letters in username
-      - name: Downcase REPO_NAME
-        run: |
-          echo "REPO_NAME=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
-      - name: Log into registry ${{ env.REGISTRY }}
+      - uses: actions/checkout@v4
+      - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
+      - id: lowercase
+        uses: ASzc/change-string-case-action@v2
         with:
-          images: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image_suffix }}
-
+          string: ${{ github.repository }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: get commit sha
+        id: commithash
+        run: | 
+          echo "git_hash=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_OUTPUT
       - name: Build and push Docker image
         id: build-and-push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
-          context: ${{ matrix.context }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          push: true
+          tags: ghcr.io/${{ steps.lowercase.outputs.lowercase }}:${{ steps.commithash.outputs.git_hash }}
