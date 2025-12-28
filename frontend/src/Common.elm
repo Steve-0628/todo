@@ -62,7 +62,7 @@ jst =
 
 api : String
 api =
-    "http://localhost:5181/api"
+    "/api"
 
 
 timeToString : Time.Posix -> String
