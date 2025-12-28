@@ -3,8 +3,8 @@ module Detail exposing (..)
 import Browser
 import Browser.Navigation as Nav
 import Common exposing (TagItem, TodoItem, api, navbar, timeToString, todoDecoder)
-import Html exposing (Html, div, h1, p, span, text)
-import Html.Attributes exposing (class)
+import Html exposing (Html, a, div, h1, p, span, text)
+import Html.Attributes exposing (class, href)
 import Http
 import Json.Decode as Decode
 import Url
@@ -122,7 +122,10 @@ viewContent model =
             div [ class "detail-view" ]
                 [ h1 [] [ text todo.title ]
                 , div [ class "meta" ]
-                    [ span [ class "date" ] [ text (timeToString todo.createdAt) ]
+                    [ a [ href ("/edit/" ++ String.fromInt todo.id), class "edit-link" ] [ text "Edit" ]
+                    , text " "
+                    , span [ class "date" ] [ text (timeToString todo.createdAt) ]
+                    , text " "
                     , span [ class "status" ]
                         [ if todo.isComplete then
                             text "Completed"

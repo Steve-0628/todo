@@ -2,7 +2,7 @@ module Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar, tagDec
 
 import Html exposing (a, div, text)
 import Html.Attributes exposing (class, href)
-import Json.Decode exposing (Decoder, bool, field, int, list, map, map2, map7, oneOf, string, succeed)
+import Json.Decode exposing (Decoder, bool, field, int, list, map, map2, map8, oneOf, string, succeed)
 import Time
 
 
@@ -22,12 +22,13 @@ type alias TodoItem =
     , expectedDue : Time.Posix
     , isComplete : Bool
     , tags : List TagItem
+    , parentTodoId : Maybe Int
     }
 
 
 todoDecoder : Decoder TodoItem
 todoDecoder =
-    map7 TodoItem
+    map8 TodoItem
         (field "id" int)
         (field "createdAt" (map Time.millisToPosix int))
         (field "title" string)
@@ -35,6 +36,7 @@ todoDecoder =
         (field "expectedDue" (map Time.millisToPosix int))
         (field "isComplete" bool)
         (field "tags" (list tagDecoder))
+        (field "parentTodoId" (Json.Decode.maybe int))
 
 
 listDecoder : Decoder (List TodoItem)

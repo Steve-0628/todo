@@ -70,6 +70,12 @@ app.MapGet("/detail/{id:int}", async (HttpContext context) =>
     await context.Response.SendFileAsync(Path.Combine(webRoot, "detail/index.html"));
 });
 
+app.MapGet("/edit/{id:int}", async (HttpContext context) =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(webRoot, "edit/index.html"));
+});
+
 app.MapGet("/api/todos", async (int page, TodoDb db) =>
 {
     var res = await db.Todos.Include(t => t.Tags).ToListAsync();
@@ -88,7 +94,8 @@ app.MapPost("/api/todos", async (
     {
         Title = req.Title,
         Content = req.Content,
-        ExpectedDue = req.ExpectedDue
+        ExpectedDue = req.ExpectedDue,
+        ParentTodoId = req.ParentTodoId
     };
 
     req.Tags.ForEach(t =>
@@ -117,6 +124,7 @@ app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
     todo.Content = req.Content;
     todo.ExpectedDue = req.ExpectedDue;
     todo.IsComplete = req.IsComplete;
+    todo.ParentTodoId = req.ParentTodoId;
 
     todo.Tags.Clear();
 
@@ -140,7 +148,9 @@ app.MapGet("/api/todos/{id}", async (int Id, TodoDb db) =>
     if (todo is null)
     {
         return Results.NotFound();
-    } else {
+    }
+    else
+    {
         return Results.Json(new
         {
             Result = todo
