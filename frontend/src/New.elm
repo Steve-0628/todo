@@ -3,8 +3,8 @@ module New exposing (..)
 import Browser
 import Browser.Navigation
 import Common exposing (TagItem, TodoItem, api, navbar, tagDecoder, todoDecoder)
-import Html exposing (button, div, input, label, option, select, span, text)
-import Html.Attributes exposing (class, multiple, placeholder, selected, type_, value)
+import Html exposing (button, div, input, label, option, select, text, textarea)
+import Html.Attributes exposing (class, placeholder, selected, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode
@@ -38,7 +38,7 @@ type alias Model =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( Model
-        (TodoItem 1 (Time.millisToPosix 0) "" "content" (Time.millisToPosix 0) False [] Nothing)
+        (TodoItem 1 (Time.millisToPosix 0) "" "" (Time.millisToPosix 0) False [] Nothing Nothing [])
         []
         []
     , Cmd.batch
@@ -58,6 +58,7 @@ init _ =
 
 type Msg
     = TextChange String
+    | UpdateContent String
     | TagChange (List String)
     | Send
     | GotResponse (Result Http.Error ())
@@ -77,6 +78,9 @@ update msg model =
         TextChange s ->
             ( updateWip (\t -> { t | title = s }) model, Cmd.none )
 
+        UpdateContent s ->
+            ( updateWip (\t -> { t | content = s }) model, Cmd.none )
+
         TagChange s ->
             let
                 newTodo =
@@ -95,6 +99,7 @@ update msg model =
                     Http.jsonBody
                         (Encode.object
                             [ ( "title", Encode.string model.wipTodo.title )
+                            , ( "content", Encode.string model.wipTodo.content )
                             , ( "tags", Encode.list (\t -> Encode.object [ ( "id", Encode.int t.id ), ( "name", Encode.string t.name ) ]) model.wipTodo.tags )
                             , ( "parentTodoId"
                               , case model.wipTodo.parentTodoId of
@@ -161,6 +166,7 @@ view model =
             , div [ class "header-title" ] [ text "Create New Todo" ]
             , div [] <|
                 [ input [ type_ "text", value model.wipTodo.title, onInput TextChange, placeholder "Enter title..." ] []
+                , textarea [ value model.wipTodo.content, onInput UpdateContent, placeholder "Enter content..." ] []
                 , input [ type_ "date" ] []
                 , MultiSelect.multiSelect { items = List.map (\t -> { value = String.fromInt t.id, text = t.name, enabled = True }) model.tags, onChange = TagChange } [] (List.map (\t -> String.fromInt t.id) model.wipTodo.tags)
 
