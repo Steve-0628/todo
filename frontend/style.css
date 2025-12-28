@@ -31,7 +31,7 @@ body {
 
 
 
-input, button, select {
+input, button, select, textarea {
     font-size: 1rem;
     margin-bottom: 0.5rem;
     display: block;
@@ -60,11 +60,4 @@ input, button, select {
     font-size: 2em;
     font-weight: bold;
     margin-bottom: 1rem;
-}
-
-textarea {
-    display: block;
-    width: 100%;
-    padding: 0.5rem;
-    min-height: 100px;
 }
