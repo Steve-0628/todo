@@ -76,9 +76,33 @@ app.MapGet("/edit/{id:int}", async (HttpContext context) =>
     await context.Response.SendFileAsync(Path.Combine(webRoot, "edit/index.html"));
 });
 
-app.MapGet("/api/todos", async (int page, TodoDb db) =>
+app.MapGet("/api/todos", async (int page, string? orderBy, bool? desc, bool? isComplete, string? search, TodoDb db) =>
 {
-    var res = await db.Todos.Include(t => t.Tags).ToListAsync();
+    var query = db.Todos.Include(t => t.Tags).AsQueryable();
+
+    if (isComplete.HasValue)
+    {
+        query = query.Where(t => t.IsComplete == isComplete.Value);
+    }
+
+    if (!string.IsNullOrWhiteSpace(search))
+    {
+        var lowerSearch = search.ToLower();
+        query = query.Where(t => t.Title.ToLower().Contains(lowerSearch) ||
+                                 t.Content.ToLower().Contains(lowerSearch));
+    }
+
+    var isDesc = desc ?? true;
+
+    query = (orderBy, isDesc) switch
+    {
+        ("due_at", true) => query.OrderByDescending(t => t.ExpectedDue),
+        ("due_at", false) => query.OrderBy(t => t.ExpectedDue),
+        ("created_at", false) => query.OrderBy(t => t.CreatedAt),
+        _ => query.OrderByDescending(t => t.CreatedAt)
+    };
+
+    var res = await query.ToListAsync();
     return Results.Ok(new
     {
         Result = res.ToArray(),
