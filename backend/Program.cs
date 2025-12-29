@@ -144,7 +144,12 @@ app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
 
 app.MapGet("/api/todos/{id}", async (int Id, TodoDb db) =>
 {
-    var todo = db.Todos.Find(Id);
+    var todo = await db.Todos
+        .Include(t => t.Tags)
+        .Include(t => t.ParentTodo)
+        .Include(t => t.ChildTodos)
+        .FirstOrDefaultAsync(t => t.Id == Id);
+
     if (todo is null)
     {
         return Results.NotFound();

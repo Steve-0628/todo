@@ -2,7 +2,7 @@ module Detail exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
-import Common exposing (TagItem, TodoItem, api, navbar, timeToString, todoDecoder)
+import Common exposing (TagItem, TodoItem, TodoSummary, api, navbar, timeToString, todoDecoder)
 import Html exposing (Html, a, div, h1, p, span, text)
 import Html.Attributes exposing (class, href)
 import Http
@@ -128,13 +128,15 @@ viewContent model =
                     , text " "
                     , span [ class "status" ]
                         [ if todo.isComplete then
-                            text "Completed"
+                            text "✅"
 
                           else
-                            text "Pending"
+                            text "❌"
                         ]
                     ]
                 , div [ class "tags" ] (List.map viewTag todo.tags)
+                , viewParent todo.parentTodo
+                , viewChildren todo.childTodos
                 , div [ class "content" ]
                     [ p [] [ text todo.content ]
                     ]
@@ -152,3 +154,42 @@ viewContent model =
 viewTag : TagItem -> Html Msg
 viewTag tag =
     span [ class "tag" ] [ text tag.name ]
+
+
+viewParent : Maybe TodoSummary -> Html Msg
+viewParent maybeParent =
+    case maybeParent of
+        Just parent ->
+            div [ class "parent-info" ]
+                [ text "Parent: "
+                , a [ href ("/detail/" ++ String.fromInt parent.id) ] [ text parent.title ]
+                ]
+
+        Nothing ->
+            text "Parent: None"
+
+
+viewChildren : List TodoSummary -> Html Msg
+viewChildren children =
+    if List.isEmpty children then
+        text ""
+
+    else
+        div [ class "children-info" ]
+            (div [ class "children-label" ] [ text "Children:" ]
+                :: List.map
+                    (\c ->
+                        div [ class "child-item" ]
+                            [ span []
+                                [ if c.isComplete then
+                                    text "✅"
+
+                                  else
+                                    text "❌"
+                                ]
+                            , text " "
+                            , a [ href ("/detail/" ++ String.fromInt c.id) ] [ text c.title ]
+                            ]
+                    )
+                    children
+            )

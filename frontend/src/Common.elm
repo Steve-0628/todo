@@ -1,11 +1,12 @@
-module Common exposing (TagItem, TodoItem, api, jst, listDecoder, navbar, tagDecoder, timeToString, todoDecoder)
+module Common exposing (TagItem, TodoItem, TodoSummary, api, jst, listDecoder, navbar, tagDecoder, timeToString, todoDecoder)
 
 import Html exposing (a, div, text)
 import Html.Attributes exposing (class, href)
-import Json.Decode exposing (Decoder, bool, field, int, list, map, map2, map8, oneOf, string, succeed)
+import Json.Decode exposing (Decoder, bool, field, int, list, map, map2, map3, map5, oneOf, string, succeed)
 import Time
 
 
+navbar : Html.Html msg
 navbar =
     div [ class "navbar" ]
         [ a [ href "/" ] [ text "Todo App" ]
@@ -23,20 +24,44 @@ type alias TodoItem =
     , isComplete : Bool
     , tags : List TagItem
     , parentTodoId : Maybe Int
+    , parentTodo : Maybe TodoSummary
+    , childTodos : List TodoSummary
+    }
+
+
+type alias TodoSummary =
+    { id : Int
+    , title : String
+    , isComplete : Bool
     }
 
 
 todoDecoder : Decoder TodoItem
 todoDecoder =
-    map8 TodoItem
+    map5 TodoItem
         (field "id" int)
         (field "createdAt" (map Time.millisToPosix int))
         (field "title" string)
         (oneOf [ field "content" string, succeed "" ])
         (field "expectedDue" (map Time.millisToPosix int))
+        |> andMap (field "isComplete" bool)
+        |> andMap (field "tags" (list tagDecoder))
+        |> andMap (field "parentTodoId" (Json.Decode.maybe int))
+        |> andMap (oneOf [ field "parentTodo" (Json.Decode.maybe todoSummaryDecoder), succeed Nothing ])
+        |> andMap (oneOf [ field "childTodos" (list todoSummaryDecoder), succeed [] ])
+
+
+todoSummaryDecoder : Decoder TodoSummary
+todoSummaryDecoder =
+    map3 TodoSummary
+        (field "id" int)
+        (field "title" string)
         (field "isComplete" bool)
-        (field "tags" (list tagDecoder))
-        (field "parentTodoId" (Json.Decode.maybe int))
+
+
+andMap : Decoder a -> Decoder (a -> b) -> Decoder b
+andMap =
+    map2 (|>)
 
 
 listDecoder : Decoder (List TodoItem)
