@@ -39,4 +39,4 @@ jobs:
         with:
           context: ${{ matrix.context }}
           push: true
-          tags: ghcr.io/${{ steps.lowercase.outputs.lowercase }}:${{ matrix.image_suffix }}
+          tags: ghcr.io/${{ steps.lowercase.outputs.lowercase }}:latest
