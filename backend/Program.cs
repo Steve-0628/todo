@@ -166,6 +166,26 @@ app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
     return Results.Ok(todo);
 });
 
+app.MapDelete("/api/todos/{id}", async (int id, TodoDb db) =>
+{
+    var todo = await db.Todos
+        .Include(t => t.ChildTodos)
+        .FirstOrDefaultAsync(t => t.Id == id);
+
+    if (todo is not null)
+    {
+        foreach (var child in todo.ChildTodos)
+        {
+            child.ParentTodoId = null;
+        }
+
+        db.Todos.Remove(todo);
+        await db.SaveChangesAsync();
+        return Results.Ok(todo);
+    }
+    return Results.NotFound();
+});
+
 app.MapGet("/api/todos/{id}", async (int Id, TodoDb db) =>
 {
     var todo = await db.Todos

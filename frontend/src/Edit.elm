@@ -36,6 +36,7 @@ type alias Model =
     , todos : List TodoItem
     , tags : List TagItem
     , error : Maybe String
+    , showDeleteConfirmation : Bool
     }
 
 
@@ -48,6 +49,7 @@ init _ url key =
             , todos = []
             , tags = []
             , error = Nothing
+            , showDeleteConfirmation = False
             }
 
         todoId =
@@ -107,6 +109,10 @@ type Msg
     | UpdateParent String
     | Save
     | GotSaveResponse (Result Http.Error TodoItem)
+    | AskDeleteConfirmation
+    | CancelDelete
+    | DeleteTodo
+    | DeleteResult (Result Http.Error ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -226,6 +232,38 @@ update msg model =
                 Err _ ->
                     ( { model | error = Just "Failed to save." }, Cmd.none )
 
+        AskDeleteConfirmation ->
+            ( { model | showDeleteConfirmation = True }, Cmd.none )
+
+        CancelDelete ->
+            ( { model | showDeleteConfirmation = False }, Cmd.none )
+
+        DeleteTodo ->
+            case model.todo of
+                Just t ->
+                    ( { model | showDeleteConfirmation = False }
+                    , Http.request
+                        { method = "DELETE"
+                        , headers = []
+                        , url = api ++ "/todos/" ++ String.fromInt t.id
+                        , body = Http.emptyBody
+                        , expect = Http.expectWhatever DeleteResult
+                        , timeout = Nothing
+                        , tracker = Nothing
+                        }
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        DeleteResult result ->
+            case result of
+                Ok _ ->
+                    ( model, Nav.load "/" )
+
+                Err _ ->
+                    ( { model | error = Just "Failed to delete todo." }, Cmd.none )
+
 
 
 -- VIEW
@@ -280,6 +318,15 @@ viewContent model =
                     ]
                 , div []
                     [ button [ onClick Save ] [ text "Save" ]
+                    , if model.showDeleteConfirmation then
+                        div [ class "confirmation" ]
+                            [ text "Are you sure you want to delete this todo? "
+                            , button [ onClick CancelDelete, class "cancel-btn" ] [ text "No" ]
+                            , button [ onClick DeleteTodo, class "confirm-btn" ] [ text "Yes" ]
+                            ]
+
+                      else
+                        button [ onClick AskDeleteConfirmation, class "delete-btn" ] [ text "Delete" ]
                     ]
                 ]
 
