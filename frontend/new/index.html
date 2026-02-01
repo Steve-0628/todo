@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Todo</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="header-title">Create New Todo</div>
+
+    <div class="form">
+        <input type="text" id="title" placeholder="Enter title...">
+        <textarea id="content" placeholder="Enter content..."></textarea>
+        <input type="date" id="expectedDue">
+
+        <div class="form-group">
+            <label>Tags (Select multiple)</label>
+            <select id="tags" multiple style="height: 100px;"></select>
+        </div>
+
+        <div class="form-group">
+            <label>Parent Todo</label>
+            <select id="parentTodo"></select>
+        </div>
+
+        <button id="createBtn">Create Todo</button>
+        <div id="statusMessage" class="error"></div>
+    </div>
+
+    <script type="module" src="../js/common.js"></script>
+    <script type="module" src="../js/new.js"></script>
+</body>
+
+</html>

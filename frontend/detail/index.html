@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Details</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="detailView" class="detail-view">
+            <h1 id="todoTitle">Loading...</h1>
+            <div class="meta">
+                <a id="editLink" href="#" class="edit-link" style="display: none;">Edit</a>
+                <span id="createdDate" class="date"></span>
+                <span id="statusIcon" class="status"></span>
+            </div>
+
+            <div id="tagsContainer" class="tags"></div>
+
+            <div id="parentContainer" class="parent-info" style="display: none;">
+                Parent: <a id="parentLink" href="#"></a>
+            </div>
+
+            <div id="childrenContainer" class="children-info" style="display: none;">
+                <div class="children-label">Children:</div>
+                <div id="childrenList"></div>
+            </div>
+
+            <div class="content">
+                <p id="todoContent"></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/common.js"></script>
+    <script type="module" src="../js/detail.js"></script>
+</body>
+
+</html>

@@ -76,6 +76,12 @@ app.MapGet("/edit/{id:int}", async (HttpContext context) =>
     await context.Response.SendFileAsync(Path.Combine(webRoot, "edit/index.html"));
 });
 
+app.MapGet("/tag/edit/{id:int}", async (HttpContext context) =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(webRoot, "tag/edit/index.html"));
+});
+
 app.MapGet("/api/todos", async (int page, string? orderBy, bool? desc, bool? isComplete, string? search, TodoDb db) =>
 {
     var query = db.Todos.Include(t => t.Tags).AsQueryable();
@@ -138,7 +144,7 @@ app.MapPost("/api/todos", async (
 
 app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
 {
-    var todo = await db.Todos.FindAsync(id);
+    var todo = await db.Todos.Include(t => t.Tags).FirstOrDefaultAsync(t => t.Id == id);
     if (todo is null)
     {
         return Results.NotFound();
@@ -211,6 +217,12 @@ app.MapGet("/api/todos/{id}", async (int Id, TodoDb db) =>
 app.MapGet("/api/tags", async (TodoDb db) =>
 {
     return await db.Tags.ToListAsync();
+});
+
+app.MapGet("/api/tags/{id}", async (int id, TodoDb db) =>
+{
+    var tag = await db.Tags.FindAsync(id);
+    return tag is not null ? Results.Ok(tag) : Results.NotFound();
 });
 
 app.MapPost("/api/tags", async (Tag req, TodoDb db) =>

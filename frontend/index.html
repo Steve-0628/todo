@@ -1,20 +1,46 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Todo App</title>
-  <link rel="stylesheet" href="/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>todo app</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <div id="elm-node"></div>
-  <script src="index.js"></script>
-  <script>
-    var app = Elm[Object.keys(Elm)[0]].init({
-      node: document.getElementById('elm-node')
-    });
-  </script>
+    <div class="header-title">My Todos</div>
+
+    <div class="controls">
+        <div>
+            Order by:
+            <select id="sortBy">
+                <option value="created_at">Created At</option>
+                <option value="due_at">Due At</option>
+            </select>
+            <select id="sortDirection">
+                <option value="desc">Desc</option>
+                <option value="asc">Asc</option>
+            </select>
+        </div>
+        <div>
+            Filter:
+            <select id="completionFilter">
+                <option value="all">Not Selected</option>
+                <option value="completed">Completed</option>
+                <option value="not_completed" selected>Not Completed</option>
+            </select>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="searchInput" placeholder="Search..." style="margin-bottom: 0;">
+            <button id="searchBtn" style="width: auto; margin-bottom: 0;">Search</button>
+        </div>
+    </div>
+
+    <div id="todoList">Loading...</div>
+
+    <script type="module" src="js/common.js"></script>
+    <script type="module" src="js/index.js"></script>
 </body>
 
 </html>

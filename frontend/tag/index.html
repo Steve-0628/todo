@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Tag</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="header-title">Create New Tag</div>
+
+    <div style="margin-top: 1rem;">
+        <input type="text" id="tagName" placeholder="New Tag Name">
+        <button id="createBtn">Create Tag</button>
+        <div id="statusMessage"></div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <h3>Existing Tags</h3>
+        <div id="tagList">Loading...</div>
+    </div>
+
+    <script type="module" src="../js/common.js"></script>
+    <script type="module" src="../js/tag.js"></script>
+</body>
+
+</html>

@@ -61,3 +61,7 @@ input, button, select, textarea {
     font-weight: bold;
     margin-bottom: 1rem;
 }
+.content p {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
