@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <!--
+      System repair failed. The installed .NET SDK is corrupted (missing workload manifests).
+      We must disable the workload resolver to allow the project to build.
+    -->
+    <MSBuildEnableWorkloadResolver>false</MSBuildEnableWorkloadResolver>
+  </PropertyGroup>
+</Project>
