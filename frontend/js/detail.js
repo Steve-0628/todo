@@ -1,4 +1,4 @@
-import { apiCall, renderNavbar } from './common.js';
+import { apiCall, renderNavbar, formatDate } from './common.js';
 
 const todoId = window.location.pathname.split('/').filter(Boolean).pop();
 
@@ -37,7 +37,7 @@ function renderTodo(todo) {
     editLink.style.display = 'inline';
 
     // Dates & Status
-    createdDate.innerText = new Date(todo.createdAt).toLocaleString();
+    createdDate.innerText = `Created: ${formatDate(todo.createdAt)} | Updated: ${formatDate(todo.updatedAt)}`;
     statusIcon.innerText = todo.isComplete ? '✅' : '❌';
 
     // Tags

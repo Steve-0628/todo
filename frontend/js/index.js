@@ -1,4 +1,4 @@
-import { apiCall, renderNavbar } from './common.js';
+import { apiCall, renderNavbar, formatDate } from './common.js';
 
 const todoList = document.getElementById('todoList');
 const sortBySelect = document.getElementById('sortBy');
@@ -62,11 +62,11 @@ function renderTodoList(todos) {
 
         // Dates
         const createdDiv = document.createElement('div');
-        createdDiv.innerText = `Created: ${new Date(todo.createdAt).toLocaleString()}`;
+        createdDiv.innerText = `Created: ${formatDate(todo.createdAt)} | Updated: ${formatDate(todo.updatedAt)}`;
         item.appendChild(createdDiv);
 
         const dueDiv = document.createElement('div');
-        dueDiv.innerText = `Due: ${new Date(todo.expectedDue).toLocaleString()}`;
+        dueDiv.innerText = `Due: ${formatDate(todo.expectedDue)}`;
         item.appendChild(dueDiv);
 
         // Tags

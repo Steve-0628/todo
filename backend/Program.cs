@@ -155,6 +155,7 @@ app.MapPatch("/api/todos/{id}", async (int id, Todo req, TodoDb db) =>
     todo.ExpectedDue = req.ExpectedDue;
     todo.IsComplete = req.IsComplete;
     todo.ParentTodoId = req.ParentTodoId;
+    todo.UpdatedAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
     todo.Tags.Clear();
 
@@ -259,6 +260,7 @@ class Todo
     public int? ParentTodoId { get; set; }
     public Todo? ParentTodo { get; set; }
     public List<Todo> ChildTodos { get; set; } = [];
+    public long UpdatedAt { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 }
 
 class Tag
